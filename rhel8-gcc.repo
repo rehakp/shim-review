@@ -1,0 +1,9 @@
+[rhel8-gcc]
+name=rhel8-gcc
+baseurl=https://people.redhat.com/~pjones/shim-rhel-8/repo/
+enabled=1
+metadata_expire=5m 
+skip_if_unavailable=0
+gpgcheck=0
+cost=10
+
