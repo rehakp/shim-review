@@ -17,8 +17,8 @@ Red Hat, Inc.
 Red Hat Enterprise Linux 8.3
 
 ###### What is the origin and full version number of your shim?
-https://github.com/rhboot/shim/releases/tag/15
-plus a lot of patches cherry picked from master.
+https://github.com/rhboot/shim/releases/tag/15 plus a lot of patches cherry
+picked from master and a couple of other bug fixes.
 
 ###### What's the justification that this really does need to be signed for the whole world to be able to boot it:
 We're a major bigtime OS vendor
@@ -74,17 +74,16 @@ It's based on 4.18.0, plus a full compliment of patches for Secure Boot and
 relevant bug fixes.
 
 ###### What changes were made since your SHIM was last signed?
-Most of the master branch (basically all but the fraught openssl rebase and the
-filesystem rearrangement) is backported here, plus a few patches that have been
-proposed as PRs or are currently PR drafts, as well as two workarounds that
-will be pushed as a PR on Wednesday.  The last two aren't pushed publicly
-yet because they make it too clear what's going on right now IMO.  Each patch
-in the src rpm except for the last two has one of the following in its
-changelog:
+This is the same as the previous RHEL 8 build plus:
+- a fix on the delete path of MokManager to fix some deletions that simply got
+  /skipped/ accidentally.
+- A fix for a minor buffer overrun; this in itself isn't a vulnerability
+  because of how edk2's allocator works, but one of our hardware partners
+  shipped a "gcc -fanalyze=address"-like allocation checker enabled by default
+  in a bunch of their hardware, and it catches it and haults booting.
 
-Upstream-commit-id: $COMMITID
-Upstream: pr#$PULL_REQUEST_NUMBER
+Everything here is en route to upstream.
 
 ###### What is the hash of your final SHIM binary?
-a1dd22421cc934e050572520a026985ae8c5fc5ad73816510713f1e1d4dff575  shimia32.efi
-b1385c6b83437e49539298e1de6072bd3a3330579f3a33bdfd21f3c9d6752461  shimx64.efi
+3ba74313087db77cf93a00e072a2fae00c0a472dac5dd6988f9c0993a0769159  shimia32.efi
+258c72394a0d163e9196a16682d3881e6cb24171eda78fe026cc9ca9bebff22e  shimx64.efi
