@@ -39,7 +39,7 @@ Who is the primary contact for security updates, etc.
 - Position: developer
 - Email address: rehak@adaptech.cz
 - PGP key fingerprint:
-I am uncertain about this requirement. We don't have anyone else in our company who would care about this matter. We aren't in contact with anybody in the Linux community nor are we planning being part of it as we don't do Linux much. We don't make use of PGP at all.
+      C9FA 48C0 1DCD 9FF3 9CA5  78A0 350E 19BE 2CFB 165F
 
 -------------------------------------------------------------------------------
 Who is the secondary contact for security updates, etc.
@@ -47,7 +47,8 @@ Who is the secondary contact for security updates, etc.
 - Name: František Žána
 - Position: executive director
 - Email address: zana@adaptech.cz
-- PGP key fingerprint: see above
+- PGP key fingerprint:
+      11D0 20A6 0F25 0920 40A3  0116 C335 B2ED BC54 0D91
 
 -------------------------------------------------------------------------------
 Please create your shim binaries starting with the 15.4 shim release tar file:
