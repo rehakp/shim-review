@@ -57,12 +57,12 @@ https://github.com/rhboot/shim/releases/download/15.4/shim-15.4.tar.bz2
 This matches https://github.com/rhboot/shim/releases/tag/15.4 and contains
 the appropriate gnu-efi source.
 -------------------------------------------------------------------------------
-The binary has been built first from the 15.4 tag, then from the tarball, both identical by their hexdump.
+The binary has been built from the 15.4 tarball.
 
 -------------------------------------------------------------------------------
 URL for a repo that contains the exact code which was built to get this binary:
 -------------------------------------------------------------------------------
-[your url here]
+https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20220314
 
 -------------------------------------------------------------------------------
 What patches are being applied and why:
@@ -75,7 +75,7 @@ If bootloader, shim loading is, GRUB2: is CVE-2020-14372, CVE-2020-25632,
  CVE-2020-10713, CVE-2020-14308, CVE-2020-14309, CVE-2020-14310, CVE-2020-14311,
  CVE-2020-15705, and if you are shipping the shim_lock module CVE-2021-3418
 -------------------------------------------------------------------------------
-Our GRUB is the upstream 2.06 one with our patch set, so these CVEs are included.
+Our GRUB is the upstream 2.06 one with our patch set, so these CVEs are included. See patches.lst inside grub-patches.tgz for descriptions.
 
 -------------------------------------------------------------------------------
 What exact implementation of Secureboot in GRUB2 ( if this is your bootloader ) you have ?

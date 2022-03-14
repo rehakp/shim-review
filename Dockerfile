@@ -10,6 +10,7 @@ WORKDIR /shim-review
 RUN wget https://github.com/rhboot/shim/releases/download/15.4/shim-15.4.tar.bz2 && \
 tar -xjf shim-15.4.tar.bz2 -C / && \
 cp -a Adaptech.cer /shim-15.4 && \
+cp -a adaptech-shim-sbat.csv /shim-15.4/data/sbat.csv && \
 ./make_shim.sh
 WORKDIR /
 
