@@ -46,13 +46,19 @@ Make sure you have provided the following information:
 ###### ( July 2020 grub2 CVE list + March 2021 grub2 CVE list )
 ###### and if you are shipping the shim_lock module CVE-2021-3418
 ###### fixed ?
-`We are on upstream GRUB 2.06 + our patch set that does not affect security so we are OK.`
+`We are on upstream GRUB 2.06 + our patch set that does not affect security so we are OK. See grub-patches.tgz and patches.lst within for descriptions.`
 
 ###### "Please specifically confirm that you add a vendor specific SBAT entry for SBAT header in each binary that supports SBAT metadata
 ###### ( grub2, fwupd, fwupdate, shim + all child shim binaries )" to shim review doc ?
 ###### Please provide exact SBAT entries for all SBAT binaries you are booting or planning to boot directly through shim
 ###### Where your code is only slightly modified from an upstream vendor's, please also preserve their SBAT entries to simplify revocation
-`sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
+`Shim SBAT:
+sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
+shim,1,UEFI shim,shim,1,https://github.com/rhboot/shim
+shim.adaptech,1,Adaptech s.r.o.,shim,15.4,info@adaptech.cz
+
+GRUB SBAT:
+sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
 grub,1,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
 grub.adaptech,1,Adaptech s.r.o.,grub,2.06-r80,info@adaptech.cz`
 
