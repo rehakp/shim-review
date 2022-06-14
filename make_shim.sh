@@ -1,5 +1,5 @@
 #!/bin/bash -x
-cd ../shim-15.4
+cd ../shim-15.6
 # test if files of the given mask exist
 if [[ -n $(shopt -s nullglob; echo *.o) ]]; then
   rm -rf bin
