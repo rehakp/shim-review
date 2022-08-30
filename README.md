@@ -34,8 +34,13 @@ For the AOS system to be loadable even before Windows boots, we have been utiliz
 
 -------------------------------------------------------------------------------
 ### Who is the primary contact for security updates, etc.?
+The security contacts need to be verified before the shim can be accepted. For subsequent requests, contact verification is only necessary if the security contacts or their PGP keys have changed since the last successful verification.
+
+An authorized reviewer will initiate contact verification by sending each security contact a PGP-encrypted email containing random words.
+You will be asked to post the contents of these mails in your `shim-review` issue to prove ownership of the email addresses and PGP keys.
+
 -------------------------------------------------------------------------------
-- Name: Petr ≈òeh√°k
+- Name: Petr ÿeh·k
 - Position: developer
 - Email address: rehak@adaptech.cz
 - PGP key fingerprint:
@@ -48,7 +53,7 @@ well known in the Linux community.)
 -------------------------------------------------------------------------------
 ### Who is the secondary contact for security updates, etc.?
 -------------------------------------------------------------------------------
-- Name: Franti≈°ek ≈Ω√°na
+- Name: Frantiöek é·na
 - Position: executive director
 - Email address: zana@adaptech.cz
 - PGP key fingerprint:
@@ -70,7 +75,7 @@ The binary has been built from the 15.6 tarball.
 -------------------------------------------------------------------------------
 ### URL for a repo that contains the exact code which was built to get this binary:
 -------------------------------------------------------------------------------
-https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20220614
+https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20220830
 
 -------------------------------------------------------------------------------
 ### What patches are being applied and why:
@@ -121,6 +126,11 @@ We haven't shipped Shim along with GRUB2 yet. Our GRUB does not allow for bootin
 
 -------------------------------------------------------------------------------
 Our gentoo kernel 5.15.32 meets this requirement.
+
+-------------------------------------------------------------------------------
+### Do you build your signed kernel with additional local patches? What do they do?
+-------------------------------------------------------------------------------
+No.
 
 -------------------------------------------------------------------------------
 ### If you use vendor_db functionality of providing multiple certificates and/or hashes please briefly describe your certificate setup.
@@ -189,7 +199,7 @@ grub.adaptech,1,Adaptech s.r.o.,grub,2.06-r80,info@adaptech.cz`
 -------------------------------------------------------------------------------
 ### Which modules are built into your signed grub image?
 -------------------------------------------------------------------------------
-We haven't built any modules into the GRUB image yet.
+all_video boot btrfs cat chain configfile echo efifwsetup ext2 fat font gettext gfxmenu gfxterm gfxterm_background gzio halt help keystatus loadenv loopback linux ls lsefi lsefimmap lsefisystab lssal lua memdisk minicmd normal ntfs part_msdos part_gpt password_pbkdf2 play png probe reboot regexp search search_fs_uuid search_fs_file search_label sleep test true video cryptodisk gcry_arcfour gcry_blowfish gcry_camellia gcry_cast5 gcry_crc gcry_des gcry_dsa gcry_idea gcry_md4 gcry_md5 gcry_rfc2268 gcry_rijndael gcry_rmd160 gcry_rsa gcry_seed gcry_serpent gcry_sha1 gcry_sha256 gcry_sha512 gcry_tiger gcry_twofish gcry_whirlpool luks lvm mdraid09 mdraid1x raid5rec raid6rec
 
 -------------------------------------------------------------------------------
 ### What is the origin and full version number of your bootloader (GRUB or other)?
@@ -204,7 +214,7 @@ Our Shim launches only GRUB.
 -------------------------------------------------------------------------------
 ### If your GRUB2 launches any other binaries that are not the Linux kernel in SecureBoot mode, please provide further details on what is launched and how it enforces Secureboot lockdown.
 -------------------------------------------------------------------------------
-Our GRUB launches, in addition, only the Windows Boot Loader, which in turn is secure all the time.
+Our GRUB launches, in addition, only the Windows Boot Loader, which in turn is supposed to be secure all the time.
 
 -------------------------------------------------------------------------------
 ### How do the launched components prevent execution of unauthenticated code?
@@ -223,3 +233,4 @@ gentoo kernel 5.15.32
 
 -------------------------------------------------------------------------------
 ### Add any additional information you think we may need to validate this shim.
+-------------------------------------------------------------------------------
