@@ -1,0 +1,130 @@
+alias clean_grub='git ls-files --other --ignored --exclude-standard \
+  | grep -v -E "^po/" "^contrib/" \
+  | xargs -I{} rm -rf {}'
+
+update_grub() 
+{ 
+    if [[ "$(basename $PWD)" != "grub" ]]; then
+        echo "Error: grub Git repo must be the current directory";
+        return 1;
+    fi
+    git clean -xfdq -e patches*
+    git pull
+    rm -rf a
+    rm -rf b
+    mkdir a
+    rsync -av --exclude=a --exclude=patches . a/ > /dev/null
+    mkdir b
+    rsync -av --exclude=a --exclude=b --exclude=patches . b/ > /dev/null
+    while read f; do
+        if [[ "${f:0:1}" != ";" ]]; then
+            echo "$f"
+            patch -d a -p1 --no-backup-if-mismatch < "patches/$f"
+        fi
+    done < "patches/patches.lst"
+    cp -r a/* b
+}
+
+make_grub ()
+{
+  rm -f build.log
+  realuser=${SUDO_USER:-$USER}
+  GRUB_MODULES="
+	all_video
+	boot
+	btrfs
+	cat
+	chain
+	configfile
+	echo
+	efifwsetup
+	ext2
+	fat
+	font
+	gettext
+	gfxmenu
+	gfxterm
+	gfxterm_background
+	gzio
+	halt
+	help
+	keystatus
+	loadenv
+	loopback
+	linux
+	ls
+	lsefi
+	lsefimmap
+	lsefisystab
+	lssal
+	lua
+	memdisk
+	minicmd
+	normal
+	ntfs
+	part_msdos
+	part_gpt
+	password_pbkdf2
+	play
+	png
+	probe
+	reboot
+	regexp
+	search
+	search_fs_uuid
+	search_fs_file
+	search_label
+	sleep
+	test
+	true
+	video
+	cryptodisk
+	gcry_arcfour
+	gcry_blowfish
+	gcry_camellia
+	gcry_cast5
+	gcry_crc
+	gcry_des
+	gcry_dsa
+	gcry_idea
+	gcry_md4
+	gcry_md5
+	gcry_rfc2268
+	gcry_rijndael
+	gcry_rmd160
+	gcry_rsa
+	gcry_seed
+	gcry_serpent
+	gcry_sha1
+	gcry_sha256
+	gcry_sha512
+	gcry_tiger
+	gcry_twofish
+	gcry_whirlpool
+	luks
+	lvm
+	mdraid09
+	mdraid1x
+	raid5rec
+	raid6rec
+	"
+  (
+    if [[ "$PWD" != *grub* ]]; then cd /home/$realuser/grub/b; fi \
+    && if [ ! -f ./configure ]; then ./bootstrap; fi \
+    && GRUB_BIN=$PWD/bin \
+    && if [ ! -f ./Makefile ]; then ./configure --prefix="${GRUB_BIN}" --with-platform=efi; fi \
+    && make -j$(nproc) \
+    && make -j$(nproc) install \
+    && "${GRUB_BIN}/bin/grub-mkimage" -O x86_64-efi -o "${GRUB_BIN}/grubx64.efi" -d "${GRUB_BIN}/lib/grub/x86_64-efi" -p "/EFI/AOS" ${GRUB_MODULES}
+  ) 2> >(tee -a build.log >&2)
+}
+
+revpatch()
+{
+  if [[ $# -eq 0 || ! -f "$1" ]]; then
+    echo "Error: patch file not specified or not found"
+    return 1
+  fi
+  echo "Undoing patch $1 from 'A':"
+  patch -d a -p1 -R --no-backup-if-mismatch <"$1"
+}
