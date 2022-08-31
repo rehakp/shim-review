@@ -1,6 +1,10 @@
+alias rmrej='find . -name "*.rej" -exec rm {} \;'
+alias change_scripts='nano /home/rehakp/.bash_aliases && . /home/rehakp/.bash_aliases'
 alias clean_grub='git ls-files --other --ignored --exclude-standard \
   | grep -v -E "^po/" "^contrib/" \
   | xargs -I{} rm -rf {}'
+alias git_log='git log --pretty=format:"%h - %an, %ar : %s" --graph'
+alias cp='cp -a'
 
 update_grub() 
 { 
@@ -115,7 +119,7 @@ make_grub ()
     && if [ ! -f ./Makefile ]; then ./configure --prefix="${GRUB_BIN}" --with-platform=efi; fi \
     && make -j$(nproc) \
     && make -j$(nproc) install \
-    && "${GRUB_BIN}/bin/grub-mkimage" -O x86_64-efi -o "${GRUB_BIN}/grubx64.efi" -d "${GRUB_BIN}/lib/grub/x86_64-efi" -p "/EFI/AOS" ${GRUB_MODULES}
+    && "${GRUB_BIN}/bin/grub-mkimage" -O x86_64-efi -o "${GRUB_BIN}/grubx64.efi" -d "${GRUB_BIN}/lib/grub/x86_64-efi" -p "/EFI/AOS" --sbat="${GRUB_BIN}/etc/grub.d/sbat.csv" ${GRUB_MODULES}
   ) 2> >(tee -a build.log >&2)
 }
 
