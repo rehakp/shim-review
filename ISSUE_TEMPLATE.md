@@ -12,7 +12,7 @@ Confirm the following are included in your repo, checking each box:
 -------------------------------------------------------------------------------
 ### What is the link to your tag in a repo cloned from rhboot/shim-review?
 -------------------------------------------------------------------------------
-`https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20220830`
+`https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20220831`
 
 -------------------------------------------------------------------------------
 ### What is the SHA256 hash of your final SHIM binary?

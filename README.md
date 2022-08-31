@@ -75,7 +75,7 @@ The binary has been built from the 15.6 tarball.
 -------------------------------------------------------------------------------
 ### URL for a repo that contains the exact code which was built to get this binary:
 -------------------------------------------------------------------------------
-https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20220830
+https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20220831
 
 -------------------------------------------------------------------------------
 ### What patches are being applied and why:
