@@ -7,16 +7,12 @@ RUN sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list && \
     apt build-dep -y shim
 
 WORKDIR /shim-review
-RUN wget https://github.com/rhboot/shim/releases/download/15.6/shim-15.6.tar.bz2 && \
-tar -xjf shim-15.6.tar.bz2 -C / && \
-cp -a Adaptech.cer /shim-15.6 && \
-cp -a adaptech-shim-sbat.csv /shim-15.6/data/sbat.csv && \
-./make_shim.sh
+RUN ./make_shim.sh
 WORKDIR /
 
 # FIXME: This only works on x86-64 efi binary
 RUN hexdump -Cv /shim-review/shimx64.efi > orig && \
-    hexdump -Cv /shim-15.6/shimx64.efi > build && \
+    hexdump -Cv shimx64.efi > build && \
     diff -u orig build
 RUN sha256sum /shim-review/shimx64.efi && \
-sha256sum /shim-15.6/shimx64.efi
+sha256sum shimx64.efi

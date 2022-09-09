@@ -1,16 +1,18 @@
 alias rmrej='find . -name "*.rej" -exec rm {} \;'
-alias change_scripts='nano /home/rehakp/.bash_aliases && . /home/rehakp/.bash_aliases'
 alias clean_grub='git ls-files --other --ignored --exclude-standard \
   | grep -v -E "^po/" "^contrib/" \
   | xargs -I{} rm -rf {}'
-alias git_log='git log --pretty=format:"%h - %an, %ar : %s" --graph'
-alias cp='cp -a'
 
 update_grub() 
 { 
     if [[ "$(basename $PWD)" != "grub" ]]; then
-        echo "Error: grub Git repo must be the current directory";
-        return 1;
+        echo "Error: grub Git repo must be the current directory"
+        return 1
+    fi
+    basedir="patches"
+    if [ ! -d "$basedir" ]; then
+        echo "Error: directory \"$basedir\" not found"
+        return 1
     fi
     git clean -xfdq -e patches*
     git pull
@@ -20,12 +22,21 @@ update_grub()
     rsync -av --exclude=a --exclude=patches . a/ > /dev/null
     mkdir b
     rsync -av --exclude=a --exclude=b --exclude=patches . b/ > /dev/null
+    PatchFiles=()
+    pushd "$basedir"
     while read f; do
-        if [[ "${f:0:1}" != ";" ]]; then
-            echo "$f"
-            patch -d a -p1 --no-backup-if-mismatch < "patches/$f"
+        [ "${f:0:1}" = ";" ] && continue
+        if [ -d "$f" ]; then
+            PatchFiles+=($f/*)
+        else
+            PatchFiles+=("$f")
         fi
-    done < "patches/patches.lst"
+    done < "patches.lst"
+    popd
+    for f in "${PatchFiles[@]}"; do
+        echo "$f"
+        patch -d a -p1 --no-backup-if-mismatch < "$basedir/$f"
+    done
     cp -r a/* b
 }
 

@@ -40,7 +40,7 @@ An authorized reviewer will initiate contact verification by sending each securi
 You will be asked to post the contents of these mails in your `shim-review` issue to prove ownership of the email addresses and PGP keys.
 
 -------------------------------------------------------------------------------
-- Name: Petr ÿeh·k
+- Name: Petr ≈òeh√°k
 - Position: developer
 - Email address: rehak@adaptech.cz
 - PGP key fingerprint:
@@ -53,7 +53,7 @@ well known in the Linux community.)
 -------------------------------------------------------------------------------
 ### Who is the secondary contact for security updates, etc.?
 -------------------------------------------------------------------------------
-- Name: Frantiöek é·na
+- Name: Franti≈°ek ≈Ω√°na
 - Position: executive director
 - Email address: zana@adaptech.cz
 - PGP key fingerprint:
@@ -75,7 +75,7 @@ The binary has been built from the 15.6 tarball.
 -------------------------------------------------------------------------------
 ### URL for a repo that contains the exact code which was built to get this binary:
 -------------------------------------------------------------------------------
-https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20220831
+https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20220909
 
 -------------------------------------------------------------------------------
 ### What patches are being applied and why:
@@ -169,7 +169,7 @@ There were no changes as we haven't had any signed Shim yet.
 -------------------------------------------------------------------------------
 ### What is the SHA256 hash of your final SHIM binary?
 -------------------------------------------------------------------------------
-621ea949d60abc733c6416ad0762d3f2d19ccd641304d62ff7f0e60460724fbe
+72635e8ec6508df76401582bf8a51462f4f94e1eda81e495092f31080feaa43b
 
 -------------------------------------------------------------------------------
 ### How do you manage and protect the keys used in your SHIM?
@@ -188,13 +188,13 @@ Yes.
 -------------------------------------------------------------------------------
 `Shim SBAT:
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-shim,1,UEFI shim,shim,1,https://github.com/rhboot/shim
+shim,2,UEFI shim,shim,1,https://github.com/rhboot/shim
 shim.adaptech,1,Adaptech s.r.o.,shim,15.6,info@adaptech.cz
 
 GRUB SBAT:
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-grub,1,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
-grub.adaptech,1,Adaptech s.r.o.,grub,2.06-r80,info@adaptech.cz`
+grub,2,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
+grub.adaptech,2,Adaptech s.r.o.,grub,2.06-r80,info@adaptech.cz`
 
 -------------------------------------------------------------------------------
 ### Which modules are built into your signed grub image?
@@ -204,7 +204,7 @@ all_video boot btrfs cat chain configfile echo efifwsetup ext2 fat font gettext 
 -------------------------------------------------------------------------------
 ### What is the origin and full version number of your bootloader (GRUB or other)?
 -------------------------------------------------------------------------------
-grub 2.06-r80 (see the grub-version.patch and other attached patches)
+grub 2.06-r81 (see the grub-version.patch and other attached patches)
 
 -------------------------------------------------------------------------------
 ### If your SHIM launches any other components, please provide further details on what is launched.
