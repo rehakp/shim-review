@@ -75,7 +75,7 @@ The binary has been built from the 15.6 tarball.
 -------------------------------------------------------------------------------
 ### URL for a repo that contains the exact code which was built to get this binary:
 -------------------------------------------------------------------------------
-https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20220909
+https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20221116
 
 -------------------------------------------------------------------------------
 ### What patches are being applied and why:
@@ -194,7 +194,7 @@ shim.adaptech,1,Adaptech s.r.o.,shim,15.6,info@adaptech.cz
 GRUB SBAT:
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
 grub,2,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
-grub.adaptech,2,Adaptech s.r.o.,grub,2.06-r80,info@adaptech.cz`
+grub.adaptech,3,Adaptech s.r.o.,grub,2.06-r82,info@adaptech.cz`
 
 -------------------------------------------------------------------------------
 ### Which modules are built into your signed grub image?
@@ -204,7 +204,7 @@ all_video boot btrfs cat chain configfile echo efifwsetup ext2 fat font gettext 
 -------------------------------------------------------------------------------
 ### What is the origin and full version number of your bootloader (GRUB or other)?
 -------------------------------------------------------------------------------
-grub 2.06-r81 (see the grub-version.patch and other attached patches)
+grub 2.06-r82 (see the grub-version.patch and other attached patches)
 
 -------------------------------------------------------------------------------
 ### If your SHIM launches any other components, please provide further details on what is launched.
