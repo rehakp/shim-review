@@ -33,6 +33,11 @@ AOS is a self-voiced and magnified application mainly for blind and visually imp
 For the AOS system to be loadable even before Windows boots, we have been utilizing the GRUB2 bootloader, and to satisfy requirements of modern architectures with Secure Boot enabled, we have found Shim as the loader of choice for us. As almost none of our customers are technically skilled persons, everything has to be designed this way. Thus we are not distributing MOK Manager and the Fallback do prevent MOK management because we don't want our customers to mess with their preconfigured system and we want to make things as simple as they can be, i.e. if the Shim does not verify our kernel signed by our EV key, it does not bother the user with MOKs, allowing us to get clear feedback on what has happened and to take the computer for service. Considering AOS Manager, SHIM's role is even more evident as it has to be part of AOS installations performed by staff of commercial subjects, thus our Shim gets to the subject's customers.
 
 -------------------------------------------------------------------------------
+### Why are you unable to reuse shim from another distro that is already signed?
+-------------------------------------------------------------------------------
+[your text here]
+
+-------------------------------------------------------------------------------
 ### Who is the primary contact for security updates, etc.?
 The security contacts need to be verified before the shim can be accepted. For subsequent requests, contact verification is only necessary if the security contacts or their PGP keys have changed since the last successful verification.
 
@@ -64,10 +69,10 @@ like keyserver.ubuntu.com, and preferably have signatures that are reasonably
 well known in the Linux community.)
 
 -------------------------------------------------------------------------------
-### Were these binaries created from the 15.6 shim release tar?
-Please create your shim binaries starting with the 15.6 shim release tar file: https://github.com/rhboot/shim/releases/download/15.6/shim-15.6.tar.bz2
+### Were these binaries created from the 15.7 shim release tar?
+Please create your shim binaries starting with the 15.7 shim release tar file: https://github.com/rhboot/shim/releases/download/15.7/shim-15.7.tar.bz2
 
-This matches https://github.com/rhboot/shim/releases/tag/15.6 and contains the appropriate gnu-efi source.
+This matches https://github.com/rhboot/shim/releases/tag/15.7 and contains the appropriate gnu-efi source.
 
 -------------------------------------------------------------------------------
 The binary has been built from the 15.6 tarball.
@@ -88,7 +93,8 @@ None.
 Upstream GRUB2 shim_lock verifier
 
 -------------------------------------------------------------------------------
-### If shim is loading GRUB2 bootloader and your previously released shim booted a version of grub affected by any of the CVEs in the July 2020 grub2 CVE list, the March 2021 grub2 CVE list, or the June 7th 2022 grub2 CVE list:
+### If shim is loading GRUB2 bootloader and your previously released shim booted a version of grub affected by any of the CVEs in the July 2020 grub2 CVE list, the March 2021 grub2 CVE list, the June 7th 2022 grub2 CVE list, or the November 15th 2022 list, have fixes for all these CVEs been applied?
+
 * CVE-2020-14372
 * CVE-2020-25632
 * CVE-2020-25647
@@ -112,6 +118,17 @@ Upstream GRUB2 shim_lock verifier
 * CVE-2022-28735
 * CVE-2022-28736
 * CVE-2022-28737
+
+* CVE-2022-2601
+* CVE-2022-3775
+-------------------------------------------------------------------------------
+[your text here]
+
+-------------------------------------------------------------------------------
+### If these fixes have been applied, have you set the global SBAT generation on your GRUB binary to 3?
+
+-------------------------------------------------------------------------------
+[your text here]
 
 ### Were old shims hashes provided to Microsoft for verification and to be added to future DBX updates?
 ### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
