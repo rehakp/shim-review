@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM ubuntu:jammy
 
 COPY . /shim-review
 RUN sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list && \

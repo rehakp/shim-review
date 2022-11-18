@@ -35,7 +35,7 @@ For the AOS system to be loadable even before Windows boots, we have been utiliz
 -------------------------------------------------------------------------------
 ### Why are you unable to reuse shim from another distro that is already signed?
 -------------------------------------------------------------------------------
-[your text here]
+Because Shim signs GRUB and we have specific requirements on how the GRUB should look like and behave for our blind and visually impaired customers (i.e. to allow capturing certain keyboard keys even while playing a tune, creating menu items enhanced by help messages etc.) We supply a patch set that can be reviewed. We simply cannot adopt anybody else's GRUB.
 
 -------------------------------------------------------------------------------
 ### Who is the primary contact for security updates, etc.?
@@ -75,12 +75,12 @@ Please create your shim binaries starting with the 15.7 shim release tar file: h
 This matches https://github.com/rhboot/shim/releases/tag/15.7 and contains the appropriate gnu-efi source.
 
 -------------------------------------------------------------------------------
-The binary has been built from the 15.6 tarball.
+The binary has been built from the 15.7 tarball.
 
 -------------------------------------------------------------------------------
 ### URL for a repo that contains the exact code which was built to get this binary:
 -------------------------------------------------------------------------------
-https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20221116
+https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20221118
 
 -------------------------------------------------------------------------------
 ### What patches are being applied and why:
@@ -122,13 +122,13 @@ Upstream GRUB2 shim_lock verifier
 * CVE-2022-2601
 * CVE-2022-3775
 -------------------------------------------------------------------------------
-[your text here]
+Yes, we are using GRUB 2.06 with 43 security fixes delivered by Gentoo.
 
 -------------------------------------------------------------------------------
 ### If these fixes have been applied, have you set the global SBAT generation on your GRUB binary to 3?
 
 -------------------------------------------------------------------------------
-[your text here]
+Yes.
 
 ### Were old shims hashes provided to Microsoft for verification and to be added to future DBX updates?
 ### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
@@ -186,7 +186,7 @@ There were no changes as we haven't had any signed Shim yet.
 -------------------------------------------------------------------------------
 ### What is the SHA256 hash of your final SHIM binary?
 -------------------------------------------------------------------------------
-72635e8ec6508df76401582bf8a51462f4f94e1eda81e495092f31080feaa43b
+c0d598fbf6774306d05ccc976a6792982969cd4c5a64b68caf82ddb6ca7e4253
 
 -------------------------------------------------------------------------------
 ### How do you manage and protect the keys used in your SHIM?
@@ -205,12 +205,12 @@ Yes.
 -------------------------------------------------------------------------------
 `Shim SBAT:
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-shim,2,UEFI shim,shim,1,https://github.com/rhboot/shim
-shim.adaptech,1,Adaptech s.r.o.,shim,15.6,info@adaptech.cz
+shim,3,UEFI shim,shim,1,https://github.com/rhboot/shim
+shim.adaptech,3,Adaptech s.r.o.,shim,15.7,info@adaptech.cz
 
 GRUB SBAT:
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-grub,2,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
+grub,3,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
 grub.adaptech,3,Adaptech s.r.o.,grub,2.06-r82,info@adaptech.cz`
 
 -------------------------------------------------------------------------------
