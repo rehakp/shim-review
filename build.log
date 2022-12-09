@@ -1,3 +1,49 @@
+--2022-12-09 13:09:54--  https://github.com/rhboot/shim/releases/download/15.7/shim-15.7.tar.bz2
+Resolving github.com (github.com)... 140.82.121.4
+Connecting to github.com (github.com)|140.82.121.4|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/3996476/c417b0cc-a277-43ea-b275-fe5fe39bf382?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20221209%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20221209T130955Z&X-Amz-Expires=300&X-Amz-Signature=c30be345c3d5c869c399a70975619eb60ae4cb1b5d3336a278b98042822fa1c2&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=3996476&response-content-disposition=attachment%3B%20filename%3Dshim-15.7.tar.bz2&response-content-type=application%2Foctet-stream [following]
+--2022-12-09 13:09:55--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/3996476/c417b0cc-a277-43ea-b275-fe5fe39bf382?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20221209%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20221209T130955Z&X-Amz-Expires=300&X-Amz-Signature=c30be345c3d5c869c399a70975619eb60ae4cb1b5d3336a278b98042822fa1c2&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=3996476&response-content-disposition=attachment%3B%20filename%3Dshim-15.7.tar.bz2&response-content-type=application%2Foctet-stream
+Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.108.133, 185.199.109.133, 185.199.111.133, ...
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.108.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1334863 (1.3M) [application/octet-stream]
+Saving to: 'shim-15.7.tar.bz2'
+
+     0K .......... .......... .......... .......... ..........  3%  543K 2s
+    50K .......... .......... .......... .......... ..........  7%  534K 2s
+   100K .......... .......... .......... .......... .......... 11% 5.51M 1s
+   150K .......... .......... .......... .......... .......... 15%  566K 2s
+   200K .......... .......... .......... .......... .......... 19% 6.77M 1s
+   250K .......... .......... .......... .......... .......... 23%  573K 1s
+   300K .......... .......... .......... .......... .......... 26% 7.40M 1s
+   350K .......... .......... .......... .......... .......... 30% 5.21M 1s
+   400K .......... .......... .......... .......... .......... 34% 7.87M 1s
+   450K .......... .......... .......... .......... .......... 38%  651K 1s
+   500K .......... .......... .......... .......... .......... 42% 6.11M 1s
+   550K .......... .......... .......... .......... .......... 46% 6.45M 1s
+   600K .......... .......... .......... .......... .......... 49% 7.82M 1s
+   650K .......... .......... .......... .......... .......... 53% 7.39M 0s
+   700K .......... .......... .......... .......... .......... 57%  746K 0s
+   750K .......... .......... .......... .......... .......... 61% 5.79M 0s
+   800K .......... .......... .......... .......... .......... 65% 8.28M 0s
+   850K .......... .......... .......... .......... .......... 69% 13.7M 0s
+   900K .......... .......... .......... .......... .......... 72% 9.46M 0s
+   950K .......... .......... .......... .......... .......... 76% 12.0M 0s
+  1000K .......... .......... .......... .......... .......... 80% 4.92M 0s
+  1050K .......... .......... .......... .......... .......... 84% 11.7M 0s
+  1100K .......... .......... .......... .......... .......... 88%  883K 0s
+  1150K .......... .......... .......... .......... .......... 92% 6.05M 0s
+  1200K .......... .......... .......... .......... .......... 95% 5.61M 0s
+  1250K .......... .......... .......... .......... .......... 99% 8.70M 0s
+  1300K ...                                                   100% 37.9M=0.7s
+
+2022-12-09 13:09:56 (1.84 MB/s) - 'shim-15.7.tar.bz2' saved [1334863/1334863]
+
+patching file BUILDING
+patching file Make.defaults
+patching file Makefile
+patching file post-process-pe.c
 sed	-e "s,@@VERSION@@,15.7," \
 	-e "s,@@UNAME@@,Linux x86_64 x86_64 x86_64 GNU/Linux," \
 	-e "s,@@COMMIT@@,11491619f4336fef41c3519877ba242161763580," \
@@ -582,7 +628,9 @@ objcopy -D -j .text -j .sdata -j .data -j .data.ident \
 	-j .rela* -j .dyn -j .reloc -j .eh_frame \
 	-j .vendor_cert -j .sbat -j .sbatlevel \
 	--target efi-app-x86_64 shimx64.so shimx64.efi
-./post-process-pe -vv shimx64.efi
+./post-process-pe -vv  shimx64.efi
+set_dll_characteristics():354: Updating DLL Characteristics from 0x0000 to 0x0100
+fix_checksum():412: Updating checksum from 0x000f6599 to 0x000f6699
 objcopy -D -j .text -j .sdata -j .data \
 	-j .dynamic -j .rodata -j .rel* \
 	-j .rela* -j .dyn -j .reloc -j .eh_frame -j .sbat \
@@ -618,13 +666,17 @@ objcopy -D -j .text -j .sdata -j .data -j .data.ident \
 	-j .rela* -j .dyn -j .reloc -j .eh_frame \
 	-j .vendor_cert -j .sbat -j .sbatlevel \
 	--target efi-app-x86_64 mmx64.so mmx64.efi
-./post-process-pe -vv mmx64.efi
+./post-process-pe -vv  mmx64.efi
+set_dll_characteristics():354: Updating DLL Characteristics from 0x0000 to 0x0100
+fix_checksum():412: Updating checksum from 0x000db713 to 0x000db813
 objcopy -D -j .text -j .sdata -j .data -j .data.ident \
 	-j .dynamic -j .rodata -j .rel* \
 	-j .rela* -j .dyn -j .reloc -j .eh_frame \
 	-j .vendor_cert -j .sbat -j .sbatlevel \
 	--target efi-app-x86_64 fbx64.so fbx64.efi
-./post-process-pe -vv fbx64.efi
+./post-process-pe -vv  fbx64.efi
+set_dll_characteristics():354: Updating DLL Characteristics from 0x0000 to 0x0100
+fix_checksum():412: Updating checksum from 0x0001a948 to 0x0001aa48
 gcc -I/usr/include -Og -g3 -Wall -Werror -Wextra -o buildid /shim-15.7/buildid.c -lelf
 Making BOOTX64.CSV
 install -d -m 0755 /shim-15.7/bin/
