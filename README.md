@@ -87,7 +87,7 @@ The binary has been built from the 15.7 tarball.
 *******************************************************************************
 ### URL for a repo that contains the exact code which was built to get this binary:
 *******************************************************************************
-https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20221209
+https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20230531
 
 *******************************************************************************
 ### What patches are being applied and why:
@@ -225,7 +225,7 @@ grub,3,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
 grub.adaptech,4,Adaptech s.r.o.,grub,2.06-r83,info@adaptech.cz`
 ```
 
-The reason for our product specific generation number being 4 rather than 1 is historical. We have been introducing new updates following the conversation in [our previous review](https://github.com/rhboot/shim-review/issues/248) and this number will be being updated whenever we patch a new security issue, until the global generation number gets updated, when we will change ours to 1 and the cycle will keep on repeating.  
+The reason for our product specific generation number being 4 rather than 1 is historical. We have been introducing new updates following the conversation in [our previous review](https://github.com/rhboot/shim-review/issues/248) and this number is being updated whenever we patch a new security issue, until the global generation number gets updated, when we will change ours to 1 and the cycle will keep on repeating.  
 If the official committee wants it here to be number 1, let us know and we will change it.
 
 *******************************************************************************
