@@ -17,7 +17,7 @@ Confirm the following are included in your repo, checking each box:
 *******************************************************************************
 ### What is the SHA256 hash of your final SHIM binary?
 *******************************************************************************
-4a1fb79dc5bbefcb5e93e9c9fe321f44117ed33f4cebdf768d527b5782046a92
+c5ae0d41bbbab851d628cbf9d75e7563ce457883833d14a3d267a796c3492310
 
 *******************************************************************************
 ### What is the link to your previous shim review request (if any, otherwise N/A)?

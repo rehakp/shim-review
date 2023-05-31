@@ -1,0 +1,10 @@
+--- b/grub-core/commands/menuentry.c	2016-09-22 18:22:32.000000000 +0000
++++ a/grub-core/commands/menuentry.c	2016-09-22 17:41:25.000000000 +0000
+@@ -56,6 +56,7 @@
+     {"tab", GRUB_TERM_TAB},
+     {"delete", GRUB_TERM_KEY_DC},
+     {"insert", GRUB_TERM_KEY_INSERT},
++    {"space", ' '},
+     {"f1", GRUB_TERM_KEY_F1},
+     {"f2", GRUB_TERM_KEY_F2},
+     {"f3", GRUB_TERM_KEY_F3},

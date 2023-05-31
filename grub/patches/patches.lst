@@ -1,0 +1,54 @@
+; This file serves as a list file for our internal GRUB patching procedure
+; as well as a description of the purpose of our patches:
+; The comment preceding each patch describes its purpose.
+;
+; gentoo patches:
+; GRUB 2.06 backported security patches from GRUB 2.12
+grub-2.06-backports
+; [PATCH] 10_linux: Default gfxpayload=keep only when booting using efi
+gfxpayload.patch
+; [PATCH] GRUB_LINUX_KERNEL_GLOBS: configurable kernel selection
+grub-2.02_beta2-KERNEL_GLOBS.patch
+; [PATCH] Use /usr/share/dict/words as a 'compressible' file
+grub-2.06-test-words.patch
+; grub-mkconfig: Restore umask for the grub.cfg
+grub-2.06-grub-mkconfig-restore-umask.patch
+; [PATCH] gentpl.py: Remove .interp section from .img files.
+grub-2.06-gentpl.py-Remove-.interp-section-from-.img-files.patch
+; fs/ext2: Ignore checksum seed incompat feature
+grub-2.06-fs-ext2-ignore-checksum-seed.patch
+; Adaptech patches:
+; Add the Lua module for enhanced scripting
+grub-add-extras.patch
+; Remove welcome messages
+grub-remove-welcome.patch
+; Add support for Caps/Num/Scroll Lock keys in EFI mode
+grub-eficonsole-togglekeys.patch
+; Play command enhancements to scan for keys while playing
+play.patch
+; Use various beeps to indicate the selected menu item
+grub-indicate-selected-menu-item-by-a-series-of-beeps.patch
+; Allow the SPACE key as the key alias for menu items
+menu-hotkey-add-space-alias.patch
+; Animation support for gfx themes (adapted from A1ive's GRUB)
+support-animation.patch
+; Command to read a single key from a user
+readkey.patch
+; Prevent blinking cursor while GRUB is running
+prevent-blinking-cursor.patch
+; Enhancements for the menuentry command
+menuentry-hidden-unfocusable-helptext-separator.patch
+; Our visual needs
+menu-visual-adjustments.patch
+; Print the "Powered by Adaptech" at the bottom of the screen
+grub-print-powered.patch
+; Debugging facilities for blind devs
+grub-blind-debug.patch
+; Git and OEM version numbering extensions
+grub-version.patch
+; Allow getting the current user inside a menuentry function
+store_current_user.patch
+; Czech translation
+grub2-czech.patch
+; SBAT metadata
+grub-sbat.patch

@@ -1,0 +1,32 @@
+diff -urp a/autogen.sh b/autogen.sh
+--- a/autogen.sh	2020-10-08 10:33:32.721843099 +0200
++++ b/autogen.sh	2020-10-08 10:03:49.435516235 +0200
+@@ -11,6 +11,7 @@ fi
+ : ${PYTHON:=python}
+ 
+ export LC_COLLATE=C
++export GRUB_CONTRIB=$extrasdir/
+ unset LC_ALL
+ 
+ find . -iname '*.[ch]' ! -ipath './grub-core/lib/libgcrypt-grub/*' ! -ipath './build-aux/*' ! -ipath './grub-core/lib/libgcrypt/src/misc.c' ! -ipath './grub-core/lib/libgcrypt/src/global.c' ! -ipath './grub-core/lib/libgcrypt/src/secmem.c'  ! -ipath './util/grub-gen-widthspec.c' ! -ipath './util/grub-gen-asciih.c' ! -ipath './gnulib/*' ! -ipath './grub-core/lib/gnulib/*' |sort > po/POTFILES.in
+@@ -45,6 +46,7 @@ rm -f contrib grub-core/contrib
+ if [ "x${GRUB_CONTRIB}" != x ]; then
+   [ "${GRUB_CONTRIB}" = contrib ] || ln -s "${GRUB_CONTRIB}" contrib
+   [ "${GRUB_CONTRIB}" = grub-core/contrib ] || ln -s ../contrib grub-core/contrib
++  find -H ./grub-core/contrib/ -iname '*.[ch]' |sort >> po/POTFILES.in
+ fi
+ 
+ UTIL_DEFS='Makefile.util.def Makefile.utilgcry.def'
+diff -urp a/include/grub/file.h b/include/grub/file.h
+--- a/include/grub/file.h	2020-10-08 10:33:32.721843099 +0200
++++ b/include/grub/file.h	2020-10-08 10:03:50.059527834 +0200
+@@ -128,6 +128,9 @@ enum grub_file_type
+ 
+     GRUB_FILE_TYPE_VERIFY_SIGNATURE,
+ 
++    /* files opened by the Lua module */
++    GRUB_FILE_TYPE_LUA,
++
+     GRUB_FILE_TYPE_MASK = 0xffff,
+ 
+     /* --skip-sig is specified.  */

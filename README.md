@@ -30,12 +30,14 @@ AOS is a self-voiced and magnified application mainly for blind and visually imp
 *******************************************************************************
 ### What's the justification that this really does need to be signed for the whole world to be able to boot it?
 *******************************************************************************
-For the AOS system to be loadable even before Windows boots, we have been utilizing the GRUB2 bootloader, and to satisfy requirements of modern architectures with Secure Boot enabled, we have found Shim as the loader of choice for us. As almost none of our customers are technically skilled persons, everything has to be designed this way. Thus we are not distributing MOK Manager and the Fallback to prevent MOK management because we don't want our customers to mess with their preconfigured system and we want to make things as simple as they can be, i.e. if the Shim does not verify our kernel signed by our EV key, it does not bother the user with MOKs, allowing us to get clear feedback on what has happened and to take the computer for service. Considering AOS Manager, SHIM's role is even more evident as it has to be part of AOS installations performed by staff of commercial subjects, thus our Shim gets to the subject's customers.
+For the AOS system to be loadable even before Windows boots, we have been utilizing the GRUB2 bootloader, and to satisfy requirements of modern architectures with Secure Boot enabled, we have found Shim as the loader of choice for us. As almost none of our customers are technically skilled people, everything has to be designed this way. Thus we are not distributing MOK Manager and the Fallback to prevent MOK management because we don't want our customers to mess with their preconfigured system and we want to make things as simple as they can be, i.e. if the Shim does not verify our kernel signed by our EV key, it does not bother the user with MOKs, allowing us to get clear feedback on what has happened and to take the computer for service. Considering AOS Manager, Shim's role is even more evident as it has to be part of AOS installations performed by staff of commercial subjects, thus our Shim gets to the subject's customers.
 
 *******************************************************************************
 ### Why are you unable to reuse shim from another distro that is already signed?
 *******************************************************************************
-Because Shim signs GRUB and we have specific requirements on how the GRUB should look like and behave for our blind and visually impaired customers (i.e. to allow capturing certain keyboard keys even while playing a tune, creating menu items enhanced by help messages etc.) We supply a patch set that can be reviewed. We simply cannot adopt anybody else's GRUB.
+We have specific requirements on how GRUB2 should look like and behave for our blind and visually impaired customers (i.e. to allow capturing certain keyboard keys even while playing a tune, creating menu items enhanced by help messages etc.). We are supplying a patch set as well as a build procedure script that can be reviewed. We simply cannot adopt anybody else's GRUB2.
+
+Our GRUB2 needs to be verifiable and only a custom Shim can make it possible.
 
 *******************************************************************************
 ### Who is the primary contact for security updates, etc.?
@@ -44,6 +46,9 @@ The security contacts need to be verified before the shim can be accepted. For s
 An authorized reviewer will initiate contact verification by sending each security contact a PGP-encrypted email containing random words.
 You will be asked to post the contents of these mails in your `shim-review` issue to prove ownership of the email addresses and PGP keys.
 *******************************************************************************
+
+Contacts have been verified in [issue 248](https://github.com/rhboot/shim-review/issues/248).
+
 - Name: Petr Řehák
 - Position: developer
 - Email address: rehak@adaptech.cz
@@ -57,6 +62,9 @@ well known in the Linux community.)
 *******************************************************************************
 ### Who is the secondary contact for security updates, etc.?
 *******************************************************************************
+
+Contacts have been verified in [issue 248](https://github.com/rhboot/shim-review/issues/248).
+
 - Name: František Žána
 - Position: executive director
 - Email address: zana@adaptech.cz
@@ -84,7 +92,7 @@ https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20221209
 *******************************************************************************
 ### What patches are being applied and why:
 *******************************************************************************
-The enable_nx patch (available in this repository) enables the NX DLL Characteristic for the SHIM binary.
+The `enable_nx.patch` (available in this repository) enables the NX DLL Characteristic for the SHIM binary.
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader what exact implementation of Secureboot in GRUB2 do you have? (Either Upstream GRUB2 shim_lock verifier or Downstream RHEL/Fedora/Debian/Canonical-like implementation)
@@ -121,7 +129,7 @@ Upstream GRUB2 shim_lock verifier
 * CVE-2022-2601
 * CVE-2022-3775
 *******************************************************************************
-Yes, we are using GRUB 2.06 with 43 security fixes delivered by Gentoo.
+Yes, we have been using GRUB 2.06 with over 40 backported upstream security fixes delivered by Gentoo.
 
 *******************************************************************************
 ### If these fixes have been applied, have you set the global SBAT generation on your GRUB binary to 3?
@@ -132,7 +140,7 @@ Yes.
 ### Were old shims hashes provided to Microsoft for verification and to be added to future DBX updates?
 ### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
 *******************************************************************************
-We haven't shipped Shim along with GRUB2 yet. Our GRUB does not allow for booting anything except the Linux kernel included in the distro and the Windows Boot Loader.
+We haven't shipped Shim along with GRUB2 yet. Our GRUB2 does not allow for booting anything except the Linux kernel included in the distro and the Windows Boot Loader.
 
 *******************************************************************************
 ### If your boot chain of trust includes a Linux kernel:
@@ -140,7 +148,7 @@ We haven't shipped Shim along with GRUB2 yet. Our GRUB does not allow for bootin
 ### Is upstream commit [75b0cea7bf307f362057cc778efe89af4c615354 "ACPI: configfs: Disallow loading ACPI tables when locked down"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=75b0cea7bf307f362057cc778efe89af4c615354) applied?
 ### Is upstream commit [eadb2f47a3ced5c64b23b90fd2a3463f63726066 "lockdown: also lock down previous kgdb use"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eadb2f47a3ced5c64b23b90fd2a3463f63726066) applied?
 *******************************************************************************
-Our gentoo kernel 5.15.82 meets this requirement.
+Our Gentoo kernel 6.1.19 meets this requirement.
 
 *******************************************************************************
 ### Do you build your signed kernel with additional local patches? What do they do?
@@ -163,17 +171,18 @@ This certificate has not been used for this purpose yet.
 ### What OS and toolchain must we use to reproduce this build?  Include where to find it, etc.  We're going to try to reproduce your build as closely as possible to verify that it's really a build of the source tree you tell us it is, so these need to be fairly thorough. At the very least include the specific versions of gcc, binutils, and gnu-efi which were used, and where to find those binaries.
 ### If the shim binaries can't be reproduced using the provided Dockerfile, please explain why that's the case and what the differences would be.
 *******************************************************************************
-- Ubuntu 22.04
+- Ubuntu 22.04.2 LTS
 - gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0
 - GNU ld (GNU Binutils for Ubuntu) 2.38 
-- see our dockerfile
+- see our Dockerfile
 
 *******************************************************************************
 ### Which files in this repo are the logs for your build?
 This should include logs for creating the buildroots, applying patches, doing the build, creating the archives, etc.
 *******************************************************************************
 The file build.log contains the whole log from `make clean` to `make install`.
-The file docker.log contains docker output, i.e. from installing a toolchain to building the Shim and comparing SHA256 checksums.
+
+The file docker.log contains Docker output, i.e. from installing a toolchain to building the Shim and comparing SHA256 checksums.
 
 *******************************************************************************
 ### What changes were made since your SHIM was last signed?
@@ -183,7 +192,7 @@ There were no changes as we haven't had any signed Shim yet.
 *******************************************************************************
 ### What is the SHA256 hash of your final SHIM binary?
 *******************************************************************************
-4a1fb79dc5bbefcb5e93e9c9fe321f44117ed33f4cebdf768d527b5782046a92
+c5ae0d41bbbab851d628cbf9d75e7563ce457883833d14a3d267a796c3492310
 
 *******************************************************************************
 ### How do you manage and protect the keys used in your SHIM?
@@ -200,35 +209,56 @@ Yes.
 ### Please provide exact SBAT entries for all SBAT binaries you are booting or planning to boot directly through shim.
 ### Where your code is only slightly modified from an upstream vendor's, please also preserve their SBAT entries to simplify revocation.
 *******************************************************************************
-`Shim SBAT:
+Shim SBAT:
+
+```
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
 shim,3,UEFI shim,shim,1,https://github.com/rhboot/shim
-shim.adaptech,3,Adaptech s.r.o.,shim,15.7,info@adaptech.cz
+shim.adaptech,1,Adaptech s.r.o.,shim,15.7,info@adaptech.cz
+```
 
-GRUB SBAT:
+GRUB2 SBAT:
+
+```
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
 grub,3,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
-grub.adaptech,3,Adaptech s.r.o.,grub,2.06-r82,info@adaptech.cz`
+grub.adaptech,4,Adaptech s.r.o.,grub,2.06-r83,info@adaptech.cz`
+```
+
+The reason for our product specific generation number being 4 rather than 1 is historical. We have been introducing new updates following the conversation in [our previous review](https://github.com/rhboot/shim-review/issues/248) and this number will be being updated whenever we patch a new security issue, until the global generation number gets updated, when we will change ours to 1 and the cycle will keep on repeating.  
+If the official committee wants it here to be number 1, let us know and we will change it.
 
 *******************************************************************************
 ### Which modules are built into your signed grub image?
 *******************************************************************************
-all_video boot btrfs cat chain configfile echo efifwsetup ext2 fat font gettext gfxmenu gfxterm gfxterm_background gzio halt help keystatus loadenv loopback linux ls lsefi lsefimmap lsefisystab lssal lua memdisk minicmd normal ntfs part_msdos part_gpt password_pbkdf2 play png probe reboot regexp search search_fs_uuid search_fs_file search_label sleep test true video cryptodisk gcry_arcfour gcry_blowfish gcry_camellia gcry_cast5 gcry_crc gcry_des gcry_dsa gcry_idea gcry_md4 gcry_md5 gcry_rfc2268 gcry_rijndael gcry_rmd160 gcry_rsa gcry_seed gcry_serpent gcry_sha1 gcry_sha256 gcry_sha512 gcry_tiger gcry_twofish gcry_whirlpool luks lvm mdraid09 mdraid1x raid5rec raid6rec
+```
+all_video boot btrfs cat chain configfile echo efifwsetup ext2 fat font gettext
+gfxmenu gfxterm gfxterm_background gzio halt help keystatus loadenv loopback
+linux ls lsefi lsefimmap lsefisystab lssal lua memdisk minicmd normal ntfs
+part_msdos part_gpt password_pbkdf2 play png probe reboot regexp search
+search_fs_uuid search_fs_file search_label sleep test true video cryptodisk
+gcry_arcfour gcry_blowfish gcry_camellia gcry_cast5 gcry_crc gcry_des gcry_dsa
+gcry_idea gcry_md4 gcry_md5 gcry_rfc2268 gcry_rijndael gcry_rmd160 gcry_rsa
+gcry_seed gcry_serpent gcry_sha1 gcry_sha256 gcry_sha512 gcry_tiger gcry_twofish
+gcry_whirlpool luks lvm mdraid09 mdraid1x raid5rec raid6rec
+```
 
 *******************************************************************************
 ### What is the origin and full version number of your bootloader (GRUB or other)?
 *******************************************************************************
-grub 2.06-r82 (see the grub-version.patch and other attached patches)
+grub 2.06-r83 (see the grub-version.patch and other attached patches)
+
+The -r83 suffix comes from our internal repository where we do our GRUB development. We keep this revision in order to have clear indication of possible bugs as this version is also being printed and can be reported by customers.
 
 *******************************************************************************
 ### If your SHIM launches any other components, please provide further details on what is launched.
 *******************************************************************************
-Our Shim launches only GRUB.
+Our Shim launches only GRUB2.
 
 *******************************************************************************
 ### If your GRUB2 launches any other binaries that are not the Linux kernel in SecureBoot mode, please provide further details on what is launched and how it enforces Secureboot lockdown.
 *******************************************************************************
-Our GRUB launches, in addition, only the Windows Boot Loader, which in turn is supposed to be secure all the time.
+Our GRUB2 launches, in addition, only the Windows Boot Loader, which in turn is supposed to be secure all the time.
 
 *******************************************************************************
 ### How do the launched components prevent execution of unauthenticated code?
@@ -243,8 +273,33 @@ No.
 *******************************************************************************
 ### What kernel are you using? Which patches does it includes to enforce Secure Boot?
 *******************************************************************************
-gentoo kernel 5.15.82
+Gentoo kernel 6.1.19
 
 *******************************************************************************
 ### Add any additional information you think we may need to validate this shim.
 *******************************************************************************
+
+Contacts have been verified in [issue 248](https://github.com/rhboot/shim-review/issues/248).
+
+---
+
+Our Gentoo kernel 6.1.19 is built with the option `CONFIG_EFI_DXE_MEM_ATTRIBUTES` and this makes it NX compatible.
+
+```
+$ grep DXE ./kernel/kernel_6.1.config
+CONFIG_EFI_DXE_MEM_ATTRIBUTES=y
+```
+
+---
+
+Our GRUB2 is being worked on to be NX compatible. As [Julian Andres Klode said](https://github.com/rhboot/shim-review/issues/326#issuecomment-1500261858)
+
+> Both the kernel and grub need very substantial patch sets to enable NX support.
+
+we are working around the clock in our internal repository we mentioned earlier so this software is tested out properly so our implementation will not be causing a false sense of security. It will be released when the tests in our laboratory are proven successful.
+
+[It shall not be a dealbreaker however](https://github.com/rhboot/shim-review/issues/307):
+
+> Hence please don't submit shims for review if you don't have working NX stack **or at least prepped the shim for NX (I mean you can continue working on the rest in the meantime)**.
+
+and our shim is NX compatible. Our kernel too as we mentioned in this section.

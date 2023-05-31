@@ -1,0 +1,85 @@
+diff -urp a/grub-core/normal/main.c b/grub-core/normal/main.c
+--- a/grub-core/normal/main.c	2018-03-26 16:43:46.589105450 +0200
++++ b/grub-core/normal/main.c	2018-03-26 16:52:36.153121311 +0200
+@@ -208,6 +207,7 @@ grub_normal_init_page (struct grub_term_
+   grub_uint32_t *last_position;
+  
+   grub_term_cls (term);
++  grub_print_powered (term);
+ 
+   msg_formatted = grub_xasprintf (_("GNU GRUB  version %s"), PACKAGE_VERSION);
+   if (!msg_formatted)
+diff -urp a/grub-core/normal/menu_text.c b/grub-core/normal/menu_text.c
+--- a/grub-core/normal/menu_text.c	2018-03-26 16:43:46.589105450 +0200
++++ b/grub-core/normal/menu_text.c	2018-03-26 16:55:06.601125817 +0200
+@@ -348,6 +348,7 @@ grub_menu_init_page (int nested, int edi
+ 			      grub_env_get ("menu_color_highlight"));
+ 
+   grub_term_cls (term);
++  grub_print_powered (term);
+ 
+   geo->timeout_y = geo->first_entry_y + geo->num_entries
+     + geo->border + empty_lines;
+@@ -496,6 +497,7 @@ menu_text_fini (void *dataptr)
+   struct menu_viewer_data *data = dataptr;
+ 
+   grub_term_cls (data->term);
++  grub_print_powered (data->term);
+   grub_free (data);
+ }
+ 
+diff -urp a/grub-core/normal/term.c b/grub-core/normal/term.c
+--- a/grub-core/normal/term.c	2018-03-26 16:43:46.589105450 +0200
++++ b/grub-core/normal/term.c	2018-03-26 17:06:40.001146584 +0200
+@@ -1084,6 +1084,23 @@ grub_xputs_normal (const char *str)
+ }
+ 
+ void
++grub_print_powered (struct grub_term_output *term)
++{
++  grub_uint8_t old_color_normal;
++
++  old_color_normal = grub_term_normal_color;
++  /* draw "powered by" message dark grey on black */
++  grub_term_normal_color = 0x08;
++  grub_term_setcolorstate (term, GRUB_TERM_COLOR_NORMAL);
++  grub_term_gotoxy (term, (struct grub_term_coordinate)
++		    { (grub_term_width (term) - 26) / 2,
++		      grub_term_height (term) });
++  grub_xputs_normal ("powered by Adaptech s.r.o.");
++  grub_term_normal_color = old_color_normal;
++  grub_term_setcolorstate (term, GRUB_TERM_COLOR_NORMAL);
++}
++
++void
+ grub_cls (void)
+ {
+   struct grub_term_output *term;
+@@ -1097,5 +1114,6 @@ grub_cls (void)
+       }
+     else
+       (term->cls) (term);
++    grub_print_powered (term);
+   }
+ }
+diff -urp a/include/grub/term.h b/include/grub/term.h
+--- a/include/grub/term.h	2018-03-26 16:43:46.581105450 +0200
++++ b/include/grub/term.h	2018-03-26 17:35:20.437198112 +0200
+@@ -329,6 +329,7 @@ grub_term_unregister_output (grub_term_o
+ void grub_putcode (grub_uint32_t code, struct grub_term_output *term);
+ int EXPORT_FUNC(grub_getkey) (void);
+ int EXPORT_FUNC(grub_getkey_noblock) (void);
++void grub_print_powered (struct grub_term_output *term);
+ int EXPORT_FUNC(grub_getkeystatus) (void);
+ int EXPORT_FUNC(grub_key_is_interrupt) (int key);
+ void grub_cls (void);
+@@ -345,7 +346,8 @@ static inline unsigned grub_term_width (
+ 
+ static inline unsigned grub_term_height (struct grub_term_output *term)
+ {
+-  return term->getwh(term).y ? : 24;
++  /* reserve the last terminal line for the "powered by" message */
++  return (term->getwh(term).y ? : 24) - 1;
+ }
+ 
+ static inline struct grub_term_coordinate

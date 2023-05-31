@@ -1,0 +1,238 @@
+diff -urp a/grub-core/normal/main.c b/grub-core/normal/main.c
+--- a/grub-core/normal/main.c	2017-05-03 10:31:56.652396736 +0200
++++ b/grub-core/normal/main.c	2017-05-04 14:51:26.958031287 +0200
+@@ -390,8 +390,9 @@ grub_normal_reader_init (int nested)
+     grub_normal_init_page (term, 1);
+     grub_term_setcursor (term, 1);
+ 
+-    if (grub_term_width (term) > 3 + STANDARD_MARGIN + 20)
+-      grub_print_message_indented (msg_formatted, 3, STANDARD_MARGIN, term);
++    /* display term help consistently with the menu help */
++    if (grub_term_width (term) > 2 * STANDARD_MARGIN + 20)
++      grub_print_message_indented (msg_formatted, STANDARD_MARGIN, STANDARD_MARGIN, term);
+     else
+       grub_print_message_indented (msg_formatted, 0, 0, term);
+     grub_putcode ('\n', term);
+diff -urp a/grub-core/normal/menu_text.c b/grub-core/normal/menu_text.c
+--- a/grub-core/normal/menu_text.c	2017-05-04 14:50:52.486208173 +0200
++++ b/grub-core/normal/menu_text.c	2017-05-04 16:01:21.331685621 +0200
+@@ -110,47 +110,6 @@ grub_print_message_indented (const char
+   grub_print_message_indented_real (msg, margin_left, margin_right, term, 0);
+ }
+ 
+-static void
+-draw_border (struct grub_term_output *term, const struct grub_term_screen_geometry *geo)
+-{
+-  int i;
+-
+-  grub_term_setcolorstate (term, GRUB_TERM_COLOR_NORMAL);
+-
+-  grub_term_gotoxy (term, (struct grub_term_coordinate) { geo->first_entry_x - 1,
+-	geo->first_entry_y - 1 });
+-  grub_putcode (GRUB_UNICODE_CORNER_UL, term);
+-  for (i = 0; i < geo->entry_width + 1; i++)
+-    grub_putcode (GRUB_UNICODE_HLINE, term);
+-  grub_putcode (GRUB_UNICODE_CORNER_UR, term);
+-
+-  for (i = 0; i < geo->num_entries; i++)
+-    {
+-      grub_term_gotoxy (term, (struct grub_term_coordinate) { geo->first_entry_x - 1,
+-	    geo->first_entry_y + i });
+-      grub_putcode (GRUB_UNICODE_VLINE, term);
+-      grub_term_gotoxy (term,
+-			(struct grub_term_coordinate) { geo->first_entry_x + geo->entry_width + 1,
+-			    geo->first_entry_y + i });
+-      grub_putcode (GRUB_UNICODE_VLINE, term);
+-    }
+-
+-  grub_term_gotoxy (term,
+-		    (struct grub_term_coordinate) { geo->first_entry_x - 1,
+-			geo->first_entry_y - 1 + geo->num_entries + 1 });
+-  grub_putcode (GRUB_UNICODE_CORNER_LL, term);
+-  for (i = 0; i < geo->entry_width + 1; i++)
+-    grub_putcode (GRUB_UNICODE_HLINE, term);
+-  grub_putcode (GRUB_UNICODE_CORNER_LR, term);
+-
+-  grub_term_setcolorstate (term, GRUB_TERM_COLOR_NORMAL);
+-
+-  grub_term_gotoxy (term,
+-		    (struct grub_term_coordinate) { geo->first_entry_x - 1,
+-			(geo->first_entry_y - 1 + geo->num_entries
+-			 + GRUB_TERM_MARGIN + 1) });
+-}
+-
+ static int
+ print_message (int nested, int edit, struct grub_term_output *term, int dry_run)
+ {
+@@ -180,6 +139,7 @@ command-line or ESC to discard edits and
+ 
+       grub_free (msg_translated);
+ 
++      grub_putcode (' ', term);
+       if (nested)
+ 	{
+ 	  ret += grub_print_message_indented_real
+@@ -236,22 +196,21 @@ print_entry (int y, int highlight, grub_
+ 			   : GRUB_TERM_COLOR_NORMAL);
+ 
+   grub_term_gotoxy (data->term, (struct grub_term_coordinate) { 
+-      data->geo.first_entry_x, y });
++      data->geo.first_entry_x + STANDARD_MARGIN - 1, y });
+ 
+   for (i = 0; i < len; i++)
+     if (unicode_title[i] == '\n' || unicode_title[i] == '\b'
+ 	|| unicode_title[i] == '\r' || unicode_title[i] == '\e')
+       unicode_title[i] = ' ';
+ 
+-  if (data->geo.num_entries > 1)
+-    grub_putcode (highlight ? '*' : ' ', data->term);
+-
++  grub_putcode (' ', data->term);
+   grub_print_ucs4_menu (unicode_title,
+ 			unicode_title + len,
+ 			0,
+ 			data->geo.right_margin,
+ 			data->term, 0, 1,
+ 			GRUB_UNICODE_RIGHTARROW, 0);
++  grub_putcode (' ', data->term);
+ 
+   grub_term_setcolorstate (data->term, GRUB_TERM_COLOR_NORMAL);
+   grub_term_gotoxy (data->term,
+@@ -334,24 +293,22 @@ grub_menu_init_page (int nested, int edi
+ 		     struct grub_term_screen_geometry *geo,
+ 		     struct grub_term_output *term)
+ {
+-  grub_uint8_t old_color_normal, old_color_highlight;
+   int msg_num_lines;
+   int bottom_message = 1;
+   int empty_lines = 1;
+-  int version_msg = 1;
+ 
+-  geo->border = 1;
+-  geo->first_entry_x = 1 /* margin */ + 1 /* border */;
++  geo->border = 0;
++  geo->first_entry_x = 0 /* margin */ + 0 /* border */;
+   geo->entry_width = grub_term_width (term) - 5;
+ 
+-  geo->first_entry_y = 2 /* two empty lines*/
+-    + 1 /* GNU GRUB version text  */ + 1 /* top border */;
++  geo->first_entry_y = 1 /* one empty line*/
++    + 1 /*  prompt text  */ + 1 /* second empty line */;
+ 
+   geo->timeout_lines = 2;
+ 
+   /* 3 lines for timeout message and bottom margin.  2 lines for the border.  */
+   geo->num_entries = grub_term_height (term) - geo->first_entry_y
+-    - 1 /* bottom border */
++    - 0 /* bottom border */
+     - 1 /* empty line before info message*/
+     - geo->timeout_lines /* timeout */
+     - 1 /* empty final line  */;
+@@ -359,20 +316,10 @@ grub_menu_init_page (int nested, int edi
+   if (geo->num_entries - msg_num_lines < 3
+       || geo->entry_width < 10)
+     {
+-      geo->num_entries += 4;
+-      geo->first_entry_y -= 2;
+-      empty_lines = 0;
+-      geo->first_entry_x -= 1;
+-      geo->entry_width += 1;
+-    }
+-  if (geo->num_entries - msg_num_lines < 3
+-      || geo->entry_width < 10)
+-    {
+       geo->num_entries += 2;
+       geo->first_entry_y -= 1;
+-      geo->first_entry_x -= 1;
+-      geo->entry_width += 2;
+-      geo->border = 0;
++      empty_lines = 0;
++      geo->entry_width += 1;
+     }
+ 
+   if (geo->entry_width <= 0)
+@@ -385,21 +330,12 @@ grub_menu_init_page (int nested, int edi
+       geo->num_entries++;
+     }
+ 
+-  if (geo->num_entries - msg_num_lines < 3)
+-    {
+-      geo->num_entries += 1;
+-      geo->first_entry_y -= 1;
+-      version_msg = 0;
+-    }
+-
+   if (geo->num_entries - msg_num_lines >= 2)
+     geo->num_entries -= msg_num_lines;
+   else
+     bottom_message = 0;
+ 
+   /* By default, use the same colors for the menu.  */
+-  old_color_normal = grub_term_normal_color;
+-  old_color_highlight = grub_term_highlight_color;
+   grub_color_menu_normal = grub_term_normal_color;
+   grub_color_menu_highlight = grub_term_highlight_color;
+ 
+@@ -409,28 +345,21 @@ grub_menu_init_page (int nested, int edi
+   grub_parse_color_name_pair (&grub_color_menu_highlight,
+ 			      grub_env_get ("menu_color_highlight"));
+ 
+-  if (version_msg)
+-    grub_normal_init_page (term, empty_lines);
+-  else
+-    grub_term_cls (term);
++  grub_term_cls (term);
+ 
+-  grub_term_normal_color = grub_color_menu_normal;
+-  grub_term_highlight_color = grub_color_menu_highlight;
+-  if (geo->border)
+-    draw_border (term, geo);
+-  grub_term_normal_color = old_color_normal;
+-  grub_term_highlight_color = old_color_highlight;
+   geo->timeout_y = geo->first_entry_y + geo->num_entries
+     + geo->border + empty_lines;
+   if (bottom_message)
+     {
+       grub_term_gotoxy (term,
+-			(struct grub_term_coordinate) { GRUB_TERM_MARGIN,
+-			    geo->timeout_y });
+-
++			(struct grub_term_coordinate) { STANDARD_MARGIN,
++			    ((grub_term_height (term)) - msg_num_lines - 1) });
+       print_message (nested, edit, term, 0);
+-      geo->timeout_y += msg_num_lines;
+     }
++  grub_term_gotoxy (term,
++			  (struct grub_term_coordinate) { STANDARD_MARGIN, 1});
++		grub_print_message_indented (_("Select AOS startup mode"),
++		  STANDARD_MARGIN, STANDARD_MARGIN, term);
+   geo->right_margin = grub_term_width (term)
+     - geo->first_entry_x
+     - geo->entry_width - 1;
+diff -urp a/grub-core/normal/term.c b/grub-core/normal/term.c
+--- a/grub-core/normal/term.c	2017-03-01 13:53:39.635958037 +0100
++++ b/grub-core/normal/term.c	2017-03-15 11:36:01.479534854 +0100
+@@ -981,7 +981,10 @@ grub_print_ucs4_menu (const grub_uint32_
+ {
+   print_ucs4_real (str, last_position, margin_left, margin_right,
+ 		   term, 0, 0, 1, skip_lines, max_lines,
++		   /* Don't fill menu item line to the right margin.	We
++		    * don't want selection to be visible beyond the end
++		    * of the menu item text.	*/
+-		   contchar, 1, pos);
++		   contchar, 0, pos);
+ }
+ 
+ void
+diff -urp a/include/grub/normal.h b/include/grub/normal.h
+--- a/include/grub/normal.h	2017-05-04 14:50:52.486208173 +0200
++++ b/include/grub/normal.h	2017-05-04 14:51:26.958031287 +0200
+@@ -29,7 +29,7 @@
+ #include <grub/file.h>
+ 
+ /* The standard left and right margin for some messages.  */
+-#define STANDARD_MARGIN 6
++#define STANDARD_MARGIN 3
+ 
+ /* The type of a completion item.  */
+ enum grub_completion_type

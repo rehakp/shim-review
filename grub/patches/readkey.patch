@@ -1,0 +1,164 @@
+diff -u a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
+--- a/grub-core/Makefile.core.def	2016-02-27 13:35:36.000000000 +0100
++++ b/grub-core/Makefile.core.def	2016-10-03 19:59:27.000000000 +0200
+@@ -1053,6 +1053,11 @@
+ };
+ 
+ module = {
++  name = readkey;
++  common = commands/readkey.c;
++};
++
++module = {
+   name = search;
+   common = commands/search_wrap.c;
+   extra_dist = commands/search.c;
+diff -u a/grub-core/commands/readkey.c b/grub-core/commands/readkey.c
+--- a/grub-core/commands/readkey.c	1970-01-01 01:00:00.000000000 +0100
++++ b/grub-core/commands/readkey.c	2016-10-03 19:59:27.000000000 +0200
+@@ -0,0 +1,145 @@
++/* readkey.c - Command to read a keypress into a variable.  */
++/*
++ *  GRUB  --  GRand Unified Bootloader
++ *  Copyright (C) 2006,2007,2008  Free Software Foundation, Inc.
++ *
++ *  GRUB is free software: you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation, either version 3 of the License, or
++ *  (at your option) any later version.
++ *
++ *  GRUB is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <grub/dl.h>
++#include <grub/misc.h>
++#include <grub/mm.h>
++#include <grub/env.h>
++#include <grub/term.h>
++#include <grub/types.h>
++#include <grub/command.h>
++#include <grub/i18n.h>
++#include <grub/time.h>
++
++GRUB_MOD_LICENSE ("GPLv3+");
++
++/* Convert a long long value to a string. This function avoids 64-bit
++   modular arithmetic or divisions.
++   This version also incorporates grub_reverse(), both copied/merged from misc.c.  */
++static inline void
++grub_lltoa_rev (char *str, int c, unsigned long long n)
++{
++  unsigned base = (c == 'x') ? 16 : 10;
++  char *p;
++
++  if ((long long) n < 0 && c == 'd')
++    {
++      n = (unsigned long long) (-((long long) n));
++      *str++ = '-';
++    }
++
++  p = str;
++
++  if (base == 16)
++    do
++      {
++	unsigned d = (unsigned) (n & 0xf);
++	*p++ = (d > 9) ? d + 'a' - 10 : d + '0';
++      }
++    while (n >>= 4);
++  else
++    /* BASE == 10 */
++    do
++      {
++	grub_uint64_t m;
++
++	n = grub_divmod64 (n, 10, &m);
++	*p++ = m + '0';
++      }
++    while (n);
++
++  *p = 0;
++
++  p = str + grub_strlen (str) - 1;
++
++  while (str < p)
++    {
++      char tmp;
++
++      tmp = *str;
++      *str = *p;
++      *p = tmp;
++      str++;
++      p--;
++    }
++
++}
++
++static char *
++grub_get_keystroke (int timeout)
++{
++  int key;
++  char *str;
++  grub_uint64_t endtime;
++
++  str = grub_malloc (17);
++  if (! str)
++    return NULL;
++
++  endtime = grub_get_time_ms () + timeout;
++ while (grub_get_time_ms() < endtime)
++    {
++      key = grub_getkey_noblock ();
++      if (key != GRUB_TERM_NO_KEY) break;
++    }
++  if (key == GRUB_TERM_NO_KEY)
++    return NULL;
++  grub_lltoa_rev (str, 'x', key);
++  return str;
++}
++
++static grub_err_t
++grub_cmd_readkey (grub_command_t cmd __attribute__ ((unused)), int argc, char **args)
++{
++  int timeout = -1;
++  if (argc > 1)
++    {
++      const char *end;
++      timeout = grub_strtol (args[1], &end, 0);
++      if (!timeout)
++	return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("invalid keypress timeout"));
++    }
++
++  char *keycode = grub_get_keystroke (timeout);
++  if (!keycode)
++    {
++      if (argc > 0)
++	grub_env_unset(args[0]);
++      return grub_errno;
++    }
++  if (argc > 0)
++    grub_env_set (args[0], keycode);
++
++  grub_free (keycode);
++  return 0;
++}
++
++static grub_command_t cmd;
++
++GRUB_MOD_INIT(readkey)
++{
++  cmd = grub_register_command ("readkey", grub_cmd_readkey,
++			       N_("[ENVVAR [timeout]]"),
++			       N_("Set variable with a user keystroke, or unset if no key was pressed. Wait for a specified time period in ms or indefinitely if not set."));
++}
++
++GRUB_MOD_FINI(readkey)
++{
++  grub_unregister_command (cmd);
++}

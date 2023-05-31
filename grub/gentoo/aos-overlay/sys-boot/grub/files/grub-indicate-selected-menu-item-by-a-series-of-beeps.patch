@@ -1,0 +1,150 @@
+[[
+Indicate selected menu entry by a series of beeps.
+These are tone frequencies in Hz retrieved from the menu_tones GRUB environment
+variable where numbers are separated by spaces. Tones are played one by one for
+a period of 55 ms followed by a pause of the same length and then the whole
+sequence repeated if the number of the menu item is greater than the number
+of retrieved tones. If no tones are provided, nothing will be played.
+Tones are played on entering the menu, menu item selection change and pressing
+the SPACE key.
+
+v1:
+- first version, beeps a single 770 Hz tone
+v2:
+- added parsing of the menu_tones variable and taking it into account when
+  beeping
+- shortened tones from 110 to 55 ms
+v3:
+- beeping code separated into a function called on menu item change as well as
+  when the menu is first displayed
+v4:
+- added Space Bar key to repeat audible menu indication
+- corrected wrong function calls in v3
+v5:
+- fixed wrong indentation
+v6:
+- again fixed (finally corrected) indentation to optimize upcoming patch
+- long comment lines wrapped to 80 chars
+- rewritten patch description
+- completed history for v2
+v7:
+- don't play anything when no tones provided
+- remove octave change based on the current time (can be handled by GRUB script)
+v8:
+- upgraded to C99 as the whole GRUB was
+- description fixes
+- patch adjusted to apply smoothly in GRUB 2.06
+]]
+diff -up a/grub-core/normal/menu.c b/grub-core/normal/menu.c
+--- a/grub-core/normal/menu.c	2017-03-01 13:53:39.635958037 +0100
++++ b/grub-core/normal/menu.c	2017-07-11 15:19:21.628776586 +0200
+@@ -33,6 +33,8 @@
+ #include <grub/gfxterm.h>
+ #include <grub/dl.h>
+ 
++#include <grub/speaker.h>
++
+ /* Time to delay after displaying an error message about a default/fallback
+    entry failing to boot.  */
+ #define DEFAULT_ENTRY_ERROR_DELAY_MS  2500
+@@ -366,13 +368,40 @@ grub_menu_execute_with_fallback (grub_me
+ }
+ 
+ static struct grub_menu_viewer *viewers;
++static grub_uint16_t *menu_tones_freqs;
++static unsigned menu_tones_count;
++
++/* indicate entry number by a series of beeps */
++static void
++beep_menu_item (int entry)
++{
++  /* don't beep at all if no user-defined menu tones provided */
++  if (! menu_tones_count)
++    return;
++
++  for (int i = 0; i <= entry; i++)
++    {
++      /* select tone frequency from the user-defined list stored
++         in the menu_tones environment variable */
++      grub_uint16_t freq = menu_tones_freqs[i % menu_tones_count];
++      grub_speaker_beep_on (freq);
++      /* leave beep on for a period of 55 ms */
++      grub_millisleep (55);
++      grub_speaker_beep_off ();
++      /* wait for another 55 ms */
++      grub_millisleep (55);
++    }
++}
+ 
+ static void
+ menu_set_chosen_entry (int entry)
+ {
+   struct grub_menu_viewer *cur;
++
+   for (cur = viewers; cur; cur = cur->next)
+     cur->set_chosen_entry (entry, cur->data);
++
++  beep_menu_item (entry);
+ }
+ 
+ static void
+@@ -447,6 +476,7 @@ menu_init (int entry, grub_menu_t menu,
+     grub_print_error ();
+     grub_errno = GRUB_ERR_NONE;
+   }
++  beep_menu_item (entry);
+ }
+ 
+ static void
+@@ -579,6 +609,8 @@ run_menu (grub_menu_t menu, int nested,
+   int default_entry, current_entry;
+   int timeout;
+   enum timeout_style timeout_style;
++  const char *menu_tones_str;
++
+ 
+   default_entry = get_entry_number (menu, "default");
+ 
+@@ -587,6 +619,31 @@ run_menu (grub_menu_t menu, int nested,
+   if (default_entry < 0 || default_entry >= menu->size)
+     default_entry = 0;
+ 
++  menu_tones_count = 0;
++  menu_tones_str = grub_env_get ("menu_tones");
++  if (menu_tones_str)
++    {
++      char *end = (char *)menu_tones_str;
++      while (*end)
++	{
++	  grub_uint16_t freq = grub_strtoul ((const char *)end, (const char ** const)&end, 0);
++	  if (!freq)
++	    {
++	      grub_error (GRUB_ERR_BAD_ARGUMENT, N_("unrecognized number in %s"), menu_tones_str);
++	      break;
++	    }
++	  void *tmp = grub_realloc (menu_tones_freqs, (++menu_tones_count)
++	      * sizeof (grub_uint16_t));
++	  if (!tmp)
++	    {
++	      grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("not enough memory for %d tones"), menu_tones_count--);
++	      break;
++	    }
++	  menu_tones_freqs = tmp;
++	  menu_tones_freqs[menu_tones_count - 1] = freq;
++	}
++    }
++
+   timeout = grub_menu_get_timeout ();
+   if (timeout < 0)
+     /* If there is no timeout, the "countdown" and "hidden" styles result in
+@@ -755,6 +812,10 @@ run_menu (grub_menu_t menu, int nested,
+ 	      menu_set_chosen_entry (current_entry);
+ 	      break;
+ 
++	    case ' ':
++	      beep_menu_item (current_entry);
++	      break;
++
+ 	    case '\n':
+ 	    case '\r':
+ 	    case GRUB_TERM_KEY_RIGHT:
