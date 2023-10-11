@@ -15,6 +15,9 @@ Note that we really only have experience with using GRUB2 on Linux, so asking
 us to endorse anything else for signing is going to require some convincing on
 your part.
 
+Check the docs directory in this repo for guidance on submission and
+getting your shim signed.
+
 Here's the template:
 
 *******************************************************************************
@@ -154,6 +157,12 @@ Our Gentoo kernel 6.1.19 meets this requirement.
 ### Do you build your signed kernel with additional local patches? What do they do?
 *******************************************************************************
 No.
+
+*******************************************************************************
+### Do you use an ephemeral key for signing kernel modules?
+### If not, please describe how you ensure that one kernel build does not load modules built for another kernel.
+*******************************************************************************
+[your text here]
 
 *******************************************************************************
 ### If you use vendor_db functionality of providing multiple certificates and/or hashes please briefly describe your certificate setup.
