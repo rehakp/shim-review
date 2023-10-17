@@ -8,11 +8,9 @@ RUN sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list && \
 
 WORKDIR /shim-review
 RUN ./make_shim.sh
-WORKDIR /
 
-# FIXME: This only works on x86-64 efi binary
-RUN hexdump -Cv /shim-review/shimx64.efi > orig && \
-    hexdump -Cv shimx64.efi > build && \
+RUN hexdump -Cv shimx64.efi > orig && \
+    hexdump -Cv tmp/shimx64.efi > build && \
     diff -u orig build
-RUN sha256sum /shim-review/shimx64.efi && \
-sha256sum shimx64.efi
+RUN sha256sum shimx64.efi && \
+    sha256sum tmp/shimx64.efi

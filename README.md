@@ -90,7 +90,7 @@ The binary has been built from the 15.7 tarball.
 *******************************************************************************
 ### URL for a repo that contains the exact code which was built to get this binary:
 *******************************************************************************
-https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20230531
+https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20231017
 
 *******************************************************************************
 ### What patches are being applied and why:
@@ -132,7 +132,7 @@ Upstream GRUB2 shim_lock verifier
 * CVE-2022-2601
 * CVE-2022-3775
 *******************************************************************************
-Yes, we have been using GRUB 2.06 with over 40 backported upstream security fixes delivered by Gentoo.
+Yes, we have been using GRUB 2.06 with over 60 backported upstream security fixes delivered by Gentoo.
 
 *******************************************************************************
 ### If these fixes have been applied, have you set the global SBAT generation on your GRUB binary to 3?
@@ -151,7 +151,7 @@ We haven't shipped Shim along with GRUB2 yet. Our GRUB2 does not allow for booti
 ### Is upstream commit [75b0cea7bf307f362057cc778efe89af4c615354 "ACPI: configfs: Disallow loading ACPI tables when locked down"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=75b0cea7bf307f362057cc778efe89af4c615354) applied?
 ### Is upstream commit [eadb2f47a3ced5c64b23b90fd2a3463f63726066 "lockdown: also lock down previous kgdb use"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eadb2f47a3ced5c64b23b90fd2a3463f63726066) applied?
 *******************************************************************************
-Our Gentoo kernel 6.1.19 meets this requirement.
+Our Gentoo kernel 6.1.57 meets this requirement.
 
 *******************************************************************************
 ### Do you build your signed kernel with additional local patches? What do they do?
@@ -162,7 +162,15 @@ No.
 ### Do you use an ephemeral key for signing kernel modules?
 ### If not, please describe how you ensure that one kernel build does not load modules built for another kernel.
 *******************************************************************************
-[your text here]
+Yes, our kernel config has the following options set:
+```
+CONFIG_MODULE_SIG=y
+CONFIG_MODULE_SIG_FORCE=y
+CONFIG_MODULE_SIG_ALL=y
+CONFIG_MODULE_SIG_KEY="certs/signing_key.pem"
+```
+
+The last option, set to its default value, means that kernel automatically signs modules while installing them.
 
 *******************************************************************************
 ### If you use vendor_db functionality of providing multiple certificates and/or hashes please briefly describe your certificate setup.
@@ -180,8 +188,8 @@ This certificate has not been used for this purpose yet.
 ### What OS and toolchain must we use to reproduce this build?  Include where to find it, etc.  We're going to try to reproduce your build as closely as possible to verify that it's really a build of the source tree you tell us it is, so these need to be fairly thorough. At the very least include the specific versions of gcc, binutils, and gnu-efi which were used, and where to find those binaries.
 ### If the shim binaries can't be reproduced using the provided Dockerfile, please explain why that's the case and what the differences would be.
 *******************************************************************************
-- Ubuntu 22.04.2 LTS
-- gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0
+- Ubuntu 22.04.3 LTS
+- gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
 - GNU ld (GNU Binutils for Ubuntu) 2.38 
 - see our Dockerfile
 
@@ -189,9 +197,12 @@ This certificate has not been used for this purpose yet.
 ### Which files in this repo are the logs for your build?
 This should include logs for creating the buildroots, applying patches, doing the build, creating the archives, etc.
 *******************************************************************************
-The file build.log contains the whole log from `make clean` to `make install`.
+The logs/ subdirectory contains all the logs as follows:
+- The file shim-build.log contains the whole local build log from `make clean` to `make install`, creating the shimx64.efi contained in this repo.
 
-The file docker.log contains Docker output, i.e. from installing a toolchain to building the Shim and comparing SHA256 checksums.
+The file docker-shim-build.log contains Docker output, i.e. from installing a toolchain to building the Shim and comparing SHA256 checksums.
+
+The docker-grub-build.log contains Docker output from running the Dockerfile in the grub-gentoo subdirectory.
 
 *******************************************************************************
 ### What changes were made since your SHIM was last signed?
@@ -201,7 +212,7 @@ There were no changes as we haven't had any signed Shim yet.
 *******************************************************************************
 ### What is the SHA256 hash of your final SHIM binary?
 *******************************************************************************
-c5ae0d41bbbab851d628cbf9d75e7563ce457883833d14a3d267a796c3492310
+170bb326192ac637137df71a0fa1916e0a243308cb0bdfc66ff285580282bd4c
 
 *******************************************************************************
 ### How do you manage and protect the keys used in your SHIM?
@@ -211,7 +222,7 @@ Our keys are on a HSM from our Authenticode certificate authority, exclusively i
 *******************************************************************************
 ### Do you use EV certificates as embedded certificates in the SHIM?
 *******************************************************************************
-Yes.
+Yes, contained in the file Adaptech.cer in this repo.
 
 *******************************************************************************
 ### Do you add a vendor-specific SBAT entry to the SBAT section in each binary that supports SBAT metadata ( grub2, fwupd, fwupdate, shim + all child shim binaries )?
@@ -231,10 +242,10 @@ GRUB2 SBAT:
 ```
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
 grub,3,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
-grub.adaptech,4,Adaptech s.r.o.,grub,2.06-r83,info@adaptech.cz`
+grub.adaptech,5,Adaptech s.r.o.,grub,2.06-r84,info@adaptech.cz`
 ```
 
-The reason for our product specific generation number being 4 rather than 1 is historical. We have been introducing new updates following the conversation in [our previous review](https://github.com/rhboot/shim-review/issues/248) and this number is being updated whenever we patch a new security issue, until the global generation number gets updated, when we will change ours to 1 and the cycle will keep on repeating.  
+The reason for our product specific generation number being 5 rather than 1 is historical. We have been introducing new updates following the conversation in [our previous review](https://github.com/rhboot/shim-review/issues/248) and this number is being updated whenever we patch a new security issue, until the global generation number gets updated, when we will change ours to 1 and the cycle will keep on repeating.  
 If the official committee wants it here to be number 1, let us know and we will change it.
 
 *******************************************************************************
@@ -255,9 +266,9 @@ gcry_whirlpool luks lvm mdraid09 mdraid1x raid5rec raid6rec
 *******************************************************************************
 ### What is the origin and full version number of your bootloader (GRUB or other)?
 *******************************************************************************
-grub 2.06-r83 (see the grub-version.patch and other attached patches)
+grub 2.06-r84 (see the grub-version.patch and other attached patches)
 
-The -r83 suffix comes from our internal repository where we do our GRUB development. We keep this revision in order to have clear indication of possible bugs as this version is also being printed and can be reported by customers.
+The -r84 suffix comes from our internal repository where we do our GRUB development. We keep this revision in order to have clear indication of possible bugs as this version is also being printed and can be reported by customers.
 
 *******************************************************************************
 ### If your SHIM launches any other components, please provide further details on what is launched.
@@ -282,7 +293,7 @@ No.
 *******************************************************************************
 ### What kernel are you using? Which patches does it includes to enforce Secure Boot?
 *******************************************************************************
-Gentoo kernel 6.1.19
+Gentoo kernel 6.1.57
 
 *******************************************************************************
 ### Add any additional information you think we may need to validate this shim.
@@ -292,7 +303,7 @@ Contacts have been verified in [issue 248](https://github.com/rhboot/shim-review
 
 ---
 
-Our Gentoo kernel 6.1.19 is built with the option `CONFIG_EFI_DXE_MEM_ATTRIBUTES` and this makes it NX compatible.
+Our Gentoo kernel 6.1.57 is built with the option `CONFIG_EFI_DXE_MEM_ATTRIBUTES` and this makes it NX compatible.
 
 ```
 $ grep DXE ./kernel/kernel_6.1.config
