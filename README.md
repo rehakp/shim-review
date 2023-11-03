@@ -90,7 +90,7 @@ The binary has been built from the 15.7 tarball.
 *******************************************************************************
 ### URL for a repo that contains the exact code which was built to get this binary:
 *******************************************************************************
-https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20231017
+https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20231103
 
 *******************************************************************************
 ### What patches are being applied and why:
@@ -132,12 +132,15 @@ Upstream GRUB2 shim_lock verifier
 * CVE-2022-2601
 * CVE-2022-3775
 *******************************************************************************
-Yes, we have been using GRUB 2.06 with over 60 backported upstream security fixes delivered by Gentoo.
+Yes, we have been using GRUB 2.06 with over 60 backported upstream security fixes delivered by Gentoo. Most of these backported patches (the security-related ones) are described by a cross-checking list associating them to the following well-known GRUB implementations:
+- Fedora: https://kojipkgs.fedoraproject.org//packages/grub2/2.06/102.fc38/src/grub2-2.06-102.fc38.src.rpm
+- Ubuntu: http://archive.ubuntu.com/ubuntu/pool/main/g/grub2/grub2_2.06-2ubuntu7.debian.tar.xz
+- cross-checking list: grub-gentoo/backports-description.md
 
 *******************************************************************************
 ### If these fixes have been applied, have you set the global SBAT generation on your GRUB binary to 3?
 *******************************************************************************
-Yes.
+Yes, I set the global SBAT generation to 3, then, upon applying NTFS patches, I have increased it to 4 as advised.
 
 *******************************************************************************
 ### Were old shims hashes provided to Microsoft for verification and to be added to future DBX updates?
@@ -241,7 +244,7 @@ GRUB2 SBAT:
 
 ```
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-grub,3,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
+grub,4,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
 grub.adaptech,5,Adaptech s.r.o.,grub,2.06-r84,info@adaptech.cz`
 ```
 
@@ -266,9 +269,9 @@ gcry_whirlpool luks lvm mdraid09 mdraid1x raid5rec raid6rec
 *******************************************************************************
 ### What is the origin and full version number of your bootloader (GRUB or other)?
 *******************************************************************************
-grub 2.06-r84 (see the grub-version.patch and other attached patches)
+grub 2.06-r85 (see the grub-version.patch and other attached patches)
 
-The -r84 suffix comes from our internal repository where we do our GRUB development. We keep this revision in order to have clear indication of possible bugs as this version is also being printed and can be reported by customers.
+The -r85 suffix comes from our internal repository where we do our GRUB development. We keep this revision in order to have clear indication of possible bugs as this version is also being printed and can be reported by customers.
 
 *******************************************************************************
 ### If your SHIM launches any other components, please provide further details on what is launched.

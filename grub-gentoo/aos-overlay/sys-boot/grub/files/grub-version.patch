@@ -125,7 +125,7 @@ diff -urpN a/VERSION b/VERSION
 +MAJOR 2
 +MINOR 06
 +#GIT_COMMIT_ENABLE
-+OEM r84
++OEM r85
 diff -urpN a/config.h.in b/config.h.in
 --- a/config.h.in	2021-05-18 14:52:51.750000000 +0200
 +++ b/config.h.in	2021-05-18 14:52:01.740000000 +0200
