@@ -90,7 +90,7 @@ The binary has been built from the 15.7 tarball.
 *******************************************************************************
 ### URL for a repo that contains the exact code which was built to get this binary:
 *******************************************************************************
-https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20231103
+https://github.com/rehakp/shim-review/tree/adaptech-shim-x86_64-20231121
 
 *******************************************************************************
 ### What patches are being applied and why:
