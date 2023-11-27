@@ -8,7 +8,7 @@ FROM gentoo/stage3:latest
 COPY --from=portage /var/db/repos/gentoo /var/db/repos/gentoo
 COPY aos-overlay/ /usr/local/portage/
 COPY etc/ /etc/
-RUN ebuild /usr/local/portage/sys-boot/grub/grub-2.06-r84.ebuild manifest
+RUN ebuild /usr/local/portage/sys-boot/grub/grub-2.06-r86.ebuild manifest
 RUN emerge grub
 RUN grub-mkimage -O x86_64-efi -o "/grubx64.efi" -p "/EFI/AosHDD" --sbat="/etc/grub.d/sbat.csv" -v \
   all_video boot btrfs cat chain configfile echo efifwsetup ext2 fat font gettext \

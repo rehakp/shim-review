@@ -245,11 +245,8 @@ GRUB2 SBAT:
 ```
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
 grub,4,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
-grub.adaptech,5,Adaptech s.r.o.,grub,2.06-r84,info@adaptech.cz`
+grub.adaptech,1,Adaptech s.r.o.,grub,2.06-r84,info@adaptech.cz`
 ```
-
-The reason for our product specific generation number being 5 rather than 1 is historical. We have been introducing new updates following the conversation in [our previous review](https://github.com/rhboot/shim-review/issues/248) and this number is being updated whenever we patch a new security issue, until the global generation number gets updated, when we will change ours to 1 and the cycle will keep on repeating.  
-If the official committee wants it here to be number 1, let us know and we will change it.
 
 *******************************************************************************
 ### Which modules are built into your signed grub image?
